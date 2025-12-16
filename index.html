@@ -121,6 +121,21 @@
       color: #10b981;
       font-size: 1.2rem;
       font-weight: bold;
+      animation: checkmarkBounce 0.5s ease;
+    }
+
+    @keyframes checkmarkBounce {
+      0% {
+        opacity: 0;
+        transform: translateY(-50%) scale(0);
+      }
+      50% {
+        transform: translateY(-50%) scale(1.2);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(-50%) scale(1);
+      }
     }
     
     .step-number {
@@ -178,23 +193,72 @@
       min-width: 68px;
       text-align: center;
       font-weight: 600;
-      padding: 4px 8px;
+      padding: 4px 8px 6px;
       border-radius: 4px;
       background: #020617;
       border: 1px solid #374151;
       font-size: 1rem;
+      position: relative;
+      overflow: hidden;
     }
-    
+
+    .timer-display::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 2px;
+      width: var(--timer-progress, 0%);
+      background: #22c55e;
+      transition: width 1s linear;
+    }
+
     .timer-display.running {
       border-color: #22c55e;
       color: #bbf7d0;
       background: #052e16;
     }
-    
+
     .timer-display.finished {
       border-color: #f97316;
       color: #fed7aa;
       background: #451a03;
+      animation: timerFinishPulse 0.5s ease;
+    }
+
+    @keyframes timerFinishPulse {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+    }
+
+    /* Circular progress ring */
+    .timer-progress-ring {
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      width: calc(100% + 4px);
+      height: calc(100% + 4px);
+      border-radius: 4px;
+      pointer-events: none;
+    }
+
+    .timer-progress-ring svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .timer-progress-ring circle {
+      fill: none;
+      stroke: #22c55e;
+      stroke-width: 2;
+      stroke-dasharray: 300;
+      stroke-dashoffset: 300;
+      transform-origin: center;
+      transition: stroke-dashoffset 0.3s linear;
     }
     
     button {
@@ -206,9 +270,16 @@
       font-size: 0.85rem;
       cursor: pointer;
       transition: all 0.2s;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
     }
     button:hover {
       background: #1f2937;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      transform: translateY(-1px);
+    }
+    button:active {
+      transform: scale(0.98) translateY(0);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
     }
     button:focus {
       outline: 2px solid #3b82f6;
@@ -220,6 +291,7 @@
     }
     button.primary:hover {
       background: #1e40af;
+      box-shadow: 0 3px 6px rgba(29, 78, 216, 0.3);
     }
     button.skip {
       background: #dc2626;
@@ -227,6 +299,29 @@
     }
     button.skip:hover {
       background: #b91c1c;
+      box-shadow: 0 3px 6px rgba(220, 38, 38, 0.3);
+    }
+
+    @media (max-width: 700px) {
+      button {
+        padding: 12px 20px;
+        font-size: 0.9rem;
+        min-height: 44px;
+      }
+    }
+
+    /* Mute button styles */
+    .mute-btn {
+      padding: 6px 10px;
+      background: #111827;
+      border: 1px solid #374151;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .mute-btn.muted {
+      opacity: 0.5;
     }
     
     footer {
@@ -353,6 +448,99 @@
       margin: 6px 0;
       line-height: 1.5;
     }
+
+    /* Workout summary section */
+    .workout-summary {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 12px;
+      background: #020617;
+      border-radius: 6px;
+      border: 1px solid #1f2937;
+      margin-bottom: 12px;
+      font-size: 0.85rem;
+      color: #9ca3af;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .workout-summary strong {
+      color: #e5e7eb;
+    }
+
+    .next-preview {
+      font-size: 0.8rem;
+      color: #60a5fa;
+      font-style: italic;
+    }
+
+    /* Confetti celebration */
+    .confetti {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      background: #22c55e;
+      position: fixed;
+      animation: confettiFall 3s ease-out forwards;
+      z-index: 1000;
+    }
+
+    @keyframes confettiFall {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(100vh) rotate(720deg);
+        opacity: 0;
+      }
+    }
+
+    /* Milestone celebration */
+    .milestone-celebration {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(34, 197, 94, 0.95);
+      color: white;
+      padding: 24px 32px;
+      border-radius: 12px;
+      font-size: 1.5rem;
+      font-weight: bold;
+      z-index: 1000;
+      animation: celebrationPop 1s ease;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    }
+
+    @keyframes celebrationPop {
+      0% {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 0;
+      }
+      50% {
+        transform: translate(-50%, -50%) scale(1.1);
+      }
+      100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+      }
+    }
+
+    /* Progress bar milestone pulse */
+    .progress-fill.milestone-reached {
+      animation: milestonePulse 0.5s ease;
+    }
+
+    @keyframes milestonePulse {
+      0%, 100% {
+        box-shadow: 0 0 0 rgba(34, 197, 94, 0);
+      }
+      50% {
+        box-shadow: 0 0 20px rgba(34, 197, 94, 0.8);
+      }
+    }
   </style>
 </head>
 <body>
@@ -383,7 +571,12 @@
       <span class="toggle-slider"></span>
     </label>
     <span>Auto-advance to next exercise when timer completes</span>
+    <button id="muteBtn" class="mute-btn" title="Toggle sound" aria-label="Toggle timer sound">
+      <span id="muteIcon">🔊</span>
+    </button>
   </div>
+
+  <div id="workoutSummary" class="workout-summary"></div>
 
   <div id="progressSection" class="progress-section">
     <div class="progress-text">
@@ -636,7 +829,8 @@
     selectedDay: 0,
     completedSteps: {}, // Format: { "day0-step0": true }
     autoAdvance: true,
-    currentStep: 0
+    currentStep: 0,
+    muted: false
   };
 
   function loadState() {
@@ -666,6 +860,7 @@
   
   // Simple audio beep
   function playBeep() {
+    if (appState.muted) return;
     try {
       const AudioCtx = window.AudioContext || window.webkitAudioContext;
       if (!AudioCtx) return;
@@ -756,15 +951,104 @@
   // =============================================================================
   // PROGRESS TRACKING
   // =============================================================================
+  let lastMilestone = 0;
+
   function updateProgress() {
     const sequence = buildWorkoutSequence(appState.selectedDay);
     const completed = sequence.filter(step => appState.completedSteps[step.id]).length;
-    
+
     const progressText = document.getElementById('progressText');
     const progressFill = document.getElementById('progressFill');
-    
+
     progressText.textContent = `Progress: ${completed}/${sequence.length} steps completed`;
-    progressFill.style.width = `${(completed / sequence.length) * 100}%`;
+    const percentage = (completed / sequence.length) * 100;
+    progressFill.style.width = `${percentage}%`;
+
+    // Check for milestone celebrations
+    const currentMilestone = Math.floor(percentage / 25) * 25;
+    if (currentMilestone > lastMilestone && currentMilestone > 0) {
+      lastMilestone = currentMilestone;
+      if (currentMilestone === 100) {
+        celebrateCompletion();
+      } else {
+        celebrateMilestone(currentMilestone);
+      }
+    }
+  }
+
+  // =============================================================================
+  // CELEBRATION FUNCTIONS
+  // =============================================================================
+  function celebrateMilestone(percentage) {
+    // Pulse the progress bar
+    const progressFill = document.getElementById('progressFill');
+    progressFill.classList.add('milestone-reached');
+    setTimeout(() => progressFill.classList.remove('milestone-reached'), 500);
+
+    // Show milestone message
+    const message = document.createElement('div');
+    message.className = 'milestone-celebration';
+    message.textContent = `${percentage}% Complete! 🎯`;
+    document.body.appendChild(message);
+
+    setTimeout(() => message.remove(), 2000);
+  }
+
+  function celebrateCompletion() {
+    // Show completion message
+    const message = document.createElement('div');
+    message.className = 'milestone-celebration';
+    message.textContent = '🎉 Workout Complete! 🎉';
+    document.body.appendChild(message);
+
+    // Create confetti
+    for (let i = 0; i < 50; i++) {
+      setTimeout(() => createConfetti(), i * 30);
+    }
+
+    setTimeout(() => message.remove(), 3000);
+  }
+
+  function createConfetti() {
+    const confetti = document.createElement('div');
+    confetti.className = 'confetti';
+
+    const colors = ['#22c55e', '#3b82f6', '#f59e0b', '#ec4899', '#8b5cf6'];
+    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+    confetti.style.left = Math.random() * 100 + '%';
+    confetti.style.top = '-10px';
+    confetti.style.width = Math.random() * 10 + 5 + 'px';
+    confetti.style.height = confetti.style.width;
+
+    document.body.appendChild(confetti);
+    setTimeout(() => confetti.remove(), 3000);
+  }
+
+  // =============================================================================
+  // WORKOUT SUMMARY
+  // =============================================================================
+  function updateWorkoutSummary() {
+    const sequence = buildWorkoutSequence(appState.selectedDay);
+    const totalSeconds = sequence.reduce((sum, step) => sum + step.data.seconds, 0);
+    const totalMinutes = Math.ceil(totalSeconds / 60);
+
+    // Find next incomplete step
+    let nextStep = null;
+    for (let i = appState.currentStep; i < sequence.length; i++) {
+      if (!appState.completedSteps[sequence[i].id]) {
+        nextStep = sequence[i];
+        break;
+      }
+    }
+
+    const summary = document.getElementById('workoutSummary');
+    summary.innerHTML = `
+      <div>
+        <strong>Total time:</strong> ~${totalMinutes} minutes |
+        <strong>Steps:</strong> ${sequence.length}
+      </div>
+      ${nextStep ? `<div class="next-preview">Next up: ${nextStep.data.name}</div>` : '<div class="next-preview">All done! 🎉</div>'}
+    `;
   }
 
   // =============================================================================
@@ -781,17 +1065,26 @@
     if (currentTimer.intervalId) {
       clearInterval(currentTimer.intervalId);
     }
-    
+
     const display = document.querySelector(`.timer-display[data-step="${stepId}"]`);
     if (!display) return;
-    
+
     currentTimer.remaining = seconds;
     currentTimer.running = true;
+    currentTimer.totalSeconds = seconds;
     display.classList.add('running');
     display.textContent = formatTime(seconds);
-    
+
+    // Update progress bar
+    const updateProgress = () => {
+      const progress = 100 - (currentTimer.remaining / currentTimer.totalSeconds) * 100;
+      display.style.setProperty('--timer-progress', `${progress}%`);
+    };
+
     currentTimer.intervalId = setInterval(() => {
       currentTimer.remaining -= 1;
+      updateProgress();
+
       if (currentTimer.remaining <= 0) {
         currentTimer.remaining = 0;
         clearInterval(currentTimer.intervalId);
@@ -799,11 +1092,12 @@
         currentTimer.running = false;
         display.classList.remove('running');
         display.classList.add('finished');
+        display.style.setProperty('--timer-progress', '100%');
         playBeep();
-        
+
         // Mark step as completed
         markStepCompleted(stepId);
-        
+
         // Auto-advance if enabled
         if (appState.autoAdvance) {
           setTimeout(() => advanceToNextStep(), 1000);
@@ -811,6 +1105,8 @@
       }
       display.textContent = formatTime(currentTimer.remaining);
     }, 1000);
+
+    updateProgress();
   }
 
   function pauseStepTimer() {
@@ -848,12 +1144,12 @@
   function setCurrentStep(stepIndex) {
     pauseStepTimer();
     appState.currentStep = stepIndex;
-    
+
     // Update UI to show current step
     document.querySelectorAll('.step-card').forEach(card => {
       card.classList.remove('current');
     });
-    
+
     const sequence = buildWorkoutSequence(appState.selectedDay);
     if (stepIndex < sequence.length) {
       const currentStepId = sequence[stepIndex].id;
@@ -863,7 +1159,8 @@
         currentCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
     }
-    
+
+    updateWorkoutSummary();
     saveState();
   }
 
@@ -892,13 +1189,18 @@
    */
   function renderWorkout(dayIndex) {
     pauseStepTimer();
-    
+
     const day = PLAN[dayIndex];
     const sequence = buildWorkoutSequence(dayIndex);
-    
+
+    // Reset milestone tracking for new day
+    lastMilestone = 0;
+
     document.getElementById('dayTitle').textContent = day.title;
     const workoutList = document.getElementById('workoutList');
     workoutList.innerHTML = '';
+
+    updateWorkoutSummary();
     
     sequence.forEach((step, index) => {
       const card = document.createElement('div');
@@ -964,21 +1266,21 @@
       
       const startBtn = document.createElement('button');
       startBtn.className = 'primary';
-      startBtn.textContent = 'Start';
+      startBtn.innerHTML = '▶️ Start';
       startBtn.onclick = () => {
         setCurrentStep(index);
         if (currentTimer.running) {
           pauseStepTimer();
-          startBtn.textContent = 'Start';
+          startBtn.innerHTML = '▶️ Start';
         } else {
           startStepTimer(currentTimer.remaining || step.data.seconds, step.id);
-          startBtn.textContent = 'Pause';
+          startBtn.innerHTML = '⏸️ Pause';
         }
       };
-      
+
       const skipBtn = document.createElement('button');
       skipBtn.className = 'skip';
-      skipBtn.textContent = 'Skip';
+      skipBtn.innerHTML = '⏭️ Skip';
       skipBtn.onclick = () => {
         setCurrentStep(index);
         skipCurrentStep();
@@ -1002,13 +1304,22 @@
   // INITIALIZATION & EVENT LISTENERS
   // =============================================================================
   loadState();
-  
+
   const daySelect = document.getElementById('daySelect');
   const autoAdvanceToggle = document.getElementById('autoAdvanceToggle');
-  
+  const muteBtn = document.getElementById('muteBtn');
+  const muteIcon = document.getElementById('muteIcon');
+
   daySelect.value = appState.selectedDay.toString();
   autoAdvanceToggle.checked = appState.autoAdvance;
-  
+
+  // Initialize mute button state
+  function updateMuteButton() {
+    muteIcon.textContent = appState.muted ? '🔇' : '🔊';
+    muteBtn.classList.toggle('muted', appState.muted);
+  }
+  updateMuteButton();
+
   renderWorkout(appState.selectedDay);
 
   // Event listeners
@@ -1016,12 +1327,19 @@
     const idx = parseInt(daySelect.value, 10) || 0;
     appState.selectedDay = idx;
     appState.currentStep = 0;
+    lastMilestone = 0; // Reset milestone tracking
     saveState();
     renderWorkout(idx);
   });
   
   autoAdvanceToggle.addEventListener('change', () => {
     appState.autoAdvance = autoAdvanceToggle.checked;
+    saveState();
+  });
+
+  muteBtn.addEventListener('click', () => {
+    appState.muted = !appState.muted;
+    updateMuteButton();
     saveState();
   });
 
@@ -1032,6 +1350,7 @@
         delete appState.completedSteps[step.id];
       });
       appState.currentStep = 0;
+      lastMilestone = 0; // Reset milestone tracking
       saveState();
       renderWorkout(appState.selectedDay);
     }
