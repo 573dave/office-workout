@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>5-Day Office Workout (15–30 Minutes)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="A free, ad-free 5-day office workout guide with step-by-step routines, built-in timers, and automatic progress tracking. Perfect for desk workers looking to stay active during work hours." />
+  <meta name="author" content="573dave" />
+
+  <!-- Open Graph / Social Media -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="5-Day Office Workout" />
+  <meta property="og:description" content="Free office workout tracker with guided routines, timers, and progress tracking. Stay healthy at work!" />
+  <meta property="og:url" content="https://573dave.github.io/office-workout/" />
+
+  <!-- Theme -->
+  <meta name="theme-color" content="#030712" />
+
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>💪</text></svg>" />
+  <style>
+    /* Basic layout and dark-ish office-friendly theme */
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #111827;
+      color: #e5e7eb;
+    }
+    header {
+      padding: 16px 20px;
+      background: #030712;
+      border-bottom: 1px solid #1f2933;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    h1 {
+      margin: 0 0 4px;
+      font-size: 1.4rem;
+      color: #f9fafb;
+    }
+    .subtitle {
+      font-size: 0.9rem;
+      color: #9ca3af;
+    }
+    main {
+      padding: 16px 20px 40px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    select {
+      padding: 6px 10px;
+      background: #111827;
+      border: 1px solid #374151;
+      border-radius: 4px;
+      color: #e5e7eb;
+    }
+    .hint {
+      font-size: 0.85rem;
+      color: #9ca3af;
+    }
+    .workout-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    /* Step card styles for linear progression */
+    .step-card {
+      border-radius: 8px;
+      padding: 10px 12px;
+      background: #020617;
+      border: 1px solid #1f2937;
+      position: relative;
+      transition: all 0.2s ease;
+    }
+    
+    .step-card.warmup {
+      background: #042f2e;
+      border-color: #065f46;
+    }
+    
+    .step-card.cooldown {
+      background: #1e1b4b;
+      border-color: #312e81;
+    }
+    
+    .step-card.rest {
+      background: #172554;
+      border-color: #1e3a8a;
+    }
+    
+    .step-card.exercise {
+      background: #020617;
+      border-color: #1f2937;
+    }
+    
+    .step-card.current {
+      box-shadow: 0 0 0 2px #3b82f6;
+      background: #1e293b;
+    }
+    
+    .step-card.completed {
+      opacity: 0.7;
+    }
+    
+    .step-card.completed::before {
+      content: "✓";
+      position: absolute;
+      left: -8px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #10b981;
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+    
+    .step-number {
+      font-size: 0.75rem;
+      color: #6b7280;
+      margin-bottom: 4px;
+    }
+    
+    .step-header {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #e5e7eb;
+      margin-bottom: 4px;
+    }
+    
+    .step-type {
+      font-size: 0.8rem;
+      color: #9ca3af;
+      margin-bottom: 6px;
+    }
+    
+    .step-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    @media (max-width: 700px) {
+      .step-content {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+    
+    .links {
+      font-size: 0.8rem;
+    }
+    .links a {
+      color: #38bdf8;
+      text-decoration: none;
+    }
+    .links a:hover {
+      text-decoration: underline;
+    }
+
+    .timer-section {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      font-size: 0.85rem;
+    }
+    
+    .timer-display {
+      min-width: 68px;
+      text-align: center;
+      font-weight: 600;
+      padding: 4px 8px;
+      border-radius: 4px;
+      background: #020617;
+      border: 1px solid #374151;
+      font-size: 1rem;
+    }
+    
+    .timer-display.running {
+      border-color: #22c55e;
+      color: #bbf7d0;
+      background: #052e16;
+    }
+    
+    .timer-display.finished {
+      border-color: #f97316;
+      color: #fed7aa;
+      background: #451a03;
+    }
+    
+    button {
+      padding: 6px 12px;
+      border-radius: 4px;
+      border: 1px solid #374151;
+      background: #111827;
+      color: #e5e7eb;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    button:hover {
+      background: #1f2937;
+    }
+    button:focus {
+      outline: 2px solid #3b82f6;
+      outline-offset: 2px;
+    }
+    button.primary {
+      background: #1d4ed8;
+      border-color: #1d4ed8;
+    }
+    button.primary:hover {
+      background: #1e40af;
+    }
+    button.skip {
+      background: #dc2626;
+      border-color: #dc2626;
+    }
+    button.skip:hover {
+      background: #b91c1c;
+    }
+    
+    footer {
+      margin-top: 24px;
+      font-size: 0.8rem;
+      color: #6b7280;
+      border-top: 1px solid #1f2937;
+      padding-top: 12px;
+    }
+    
+    .day-title {
+      font-weight: 600;
+      margin-bottom: 12px;
+      font-size: 1.1rem;
+    }
+    
+    /* Progress indicator */
+    .progress-section {
+      margin: 16px 0;
+      padding: 12px;
+      background: #020617;
+      border-radius: 8px;
+      border: 1px solid #1f2937;
+    }
+    .progress-bar {
+      height: 8px;
+      background: #1f2937;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+    .progress-fill {
+      height: 100%;
+      background: #22c55e;
+      transition: width 0.3s ease;
+    }
+    .progress-text {
+      font-size: 0.85rem;
+      color: #9ca3af;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    /* Auto-advance toggle */
+    .auto-advance-section {
+      margin: 12px 0;
+      padding: 10px;
+      background: #020617;
+      border-radius: 6px;
+      border: 1px solid #1f2937;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.85rem;
+    }
+    
+    .toggle-switch {
+      position: relative;
+      width: 44px;
+      height: 24px;
+    }
+    
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #374151;
+      transition: 0.3s;
+      border-radius: 24px;
+    }
+    
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: #e5e7eb;
+      transition: 0.3s;
+      border-radius: 50%;
+    }
+    
+    input:checked + .toggle-slider {
+      background-color: #22c55e;
+    }
+    
+    input:checked + .toggle-slider:before {
+      transform: translateX(20px);
+    }
+    
+    /* Keyboard shortcuts hint */
+    .shortcuts-hint {
+      margin-top: 16px;
+      padding: 10px;
+      background: #020617;
+      border-radius: 6px;
+      border: 1px solid #1f2937;
+      font-size: 0.8rem;
+      color: #9ca3af;
+    }
+    .shortcuts-hint kbd {
+      background: #1f2937;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: monospace;
+      color: #e5e7eb;
+    }
+    
+    /* Warmup/cooldown instructions */
+    .instructions-text {
+      font-size: 0.85rem;
+      color: #9ca3af;
+      margin: 6px 0;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+<header>
+  <h1>5-Day Office Workout</h1>
+  <div class="subtitle">
+    15–30 minutes • Step-by-step routine with warmup, exercises, rests & cooldown
+    <br>
+    <span style="font-size: 0.85rem; opacity: 0.8;">Created by <a href="https://github.com/573dave" target="_blank" rel="noopener" style="color: #60a5fa; text-decoration: none;">573dave</a></span>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <label for="daySelect">Choose day:</label>
+    <select id="daySelect" aria-label="Select workout day">
+      <option value="0">Day 1 – Core & Glutes</option>
+      <option value="1">Day 2 – Upper Body & Posture</option>
+      <option value="2">Day 3 – Legs & Balance</option>
+      <option value="3">Day 4 – Cardio & Core</option>
+      <option value="4">Day 5 – Mixed Strength</option>
+    </select>
+  </div>
+
+  <div class="auto-advance-section">
+    <label class="toggle-switch">
+      <input type="checkbox" id="autoAdvanceToggle" checked>
+      <span class="toggle-slider"></span>
+    </label>
+    <span>Auto-advance to next exercise when timer completes</span>
+  </div>
+
+  <div id="progressSection" class="progress-section">
+    <div class="progress-text">
+      <span id="progressText">Progress: 0/0 steps completed</span>
+      <button id="resetProgressBtn" class="reset-progress-btn" aria-label="Reset all progress">Reset Progress</button>
+    </div>
+    <div class="progress-bar">
+      <div id="progressFill" class="progress-fill" style="width: 0%"></div>
+    </div>
+  </div>
+
+  <div id="dayTitle" class="day-title"></div>
+  <div id="workoutList" class="workout-list"></div>
+
+  <div class="shortcuts-hint">
+    <strong>Keyboard shortcuts:</strong> 
+    <kbd>Space</kbd> Start/pause current step • 
+    <kbd>N</kbd> Next step • 
+    <kbd>P</kbd> Previous step • 
+    <kbd>1-5</kbd> Switch days
+  </div>
+
+  <footer>
+    <p>
+      All exercise tutorials are from ad-free, reputable fitness resources including
+      ACE Fitness, NHS Live Well, and Mayo Clinic.
+      The routine includes proper warmup and cooldown periods with automatic rest breaks between exercises.
+    </p>
+    <p style="margin-top: 8px;">
+      Your progress and settings are automatically saved locally in your browser.
+    </p>
+    <p style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #1f2937;">
+      <strong>Open Source Project</strong><br>
+      Created by <a href="https://github.com/573dave" target="_blank" rel="noopener" style="color: #60a5fa; text-decoration: none;">573dave</a> •
+      <a href="https://github.com/573dave/office-workout" target="_blank" rel="noopener" style="color: #60a5fa; text-decoration: none;">View on GitHub</a> •
+      Licensed under MIT
+    </p>
+  </footer>
+</main>
+
+<script>
+  /**
+   * 5-Day Office Workout Tracker
+   *
+   * A single-file web application for guided office workouts with:
+   * - 5 different daily workout routines
+   * - Built-in timers with audio notifications
+   * - Progress tracking with localStorage persistence
+   * - Keyboard shortcuts for easy navigation
+   * - Auto-advance between exercises
+   *
+   * Created by: 573dave
+   * License: MIT
+   * Repository: https://github.com/573dave/office-workout
+   */
+
+  // =============================================================================
+  // WORKOUT DATA
+  // =============================================================================
+
+  // --- Warmup and cooldown routines -----------------------------------------
+  const WARMUP = {
+    name: "Warmup (2 minutes)",
+    type: "Prepare your body",
+    seconds: 120,
+    instructions: [
+      "• Arm circles: 20 seconds forward, 20 seconds backward",
+      "• Neck rolls: Gently roll head in circles, 10 each direction",
+      "• Shoulder shrugs: 15 reps, hold for 2 seconds at top",
+      "• Torso twists: Stand and twist left/right, 20 reps total",
+      "• Marching in place: 30 seconds, bring knees up",
+      "• Wrist circles: 10 each direction, both hands"
+    ]
+  };
+  
+  const COOLDOWN = {
+    name: "Cooldown & Stretch (2 minutes)",
+    type: "Recovery and flexibility",
+    seconds: 120,
+    instructions: [
+      "• Deep breathing: 4 counts in, 6 counts out (30 seconds)",
+      "• Seated forward fold: Reach for toes, hold 30 seconds",
+      "• Seated spinal twist: Hold each side for 20 seconds",
+      "• Chest doorway stretch: 30 seconds each arm",
+      "• Neck side stretch: Hold each side for 15 seconds",
+      "• Final relaxation: Close eyes, breathe normally"
+    ]
+  };
+
+  // --- Workout data: 5 days -------------------------------------------------
+  const PLAN = [
+    {
+      title: "Day 1 – Core & Glutes",
+      exercises: [
+        {
+          name: "Dead Bug",
+          type: "Core stability",
+          seconds: 40,
+          link: "https://www.acefitness.org/resources/everyone/exercise-library/232/dead-bug/"
+        },
+        {
+          name: "Glute Bridge",
+          type: "Glutes & hamstrings",
+          seconds: 40,
+          link: "https://www.acefitness.org/resources/everyone/exercise-library/49/glute-bridge/"
+        },
+        {
+          name: "Bird Dog",
+          type: "Core & back",
+          seconds: 40,
+          link: "https://www.acefitness.org/resources/everyone/exercise-library/14/bird-dog/"
+        },
+        {
+          name: "Wall Sit",
+          type: "Quads & isometric hold",
+          seconds: 30,
+          link: "https://www.nhs.uk/live-well/exercise/strength-and-flexibility-exercises/how-to-do-a-wall-sit/"
+        }
+      ]
+    },
+    {
+      title: "Day 2 – Upper Body & Posture",
+      exercises: [
+        {
+          name: "Incline Push-Up (Desk/Wall)",
+          type: "Chest, shoulders, triceps",
+          seconds: 40,
+          link: "https://www.acefitness.org/resources/everyone/exercise-library/41/push-up/"
+        },
+        {
+          name: "Chair Dips",
+          type: "Triceps",
+          seconds: 30,
+          link: "https://www.nhs.uk/live-well/exercise/strength-and-flexibility-exercises/tricep-dips/"
+        },
+        {
+          name: "Plank",
+          type: "Core",
+          seconds: 30,
+          link: "https://www.nhs.uk/live-well/exercise/strength-and-flexibility-exercises/plank-exercise/"
+        },
+        {
+          name: "Bodyweight Good Morning",
+          type: "Posture, hamstrings, lower back",
+          seconds: 40,
+          link: "https://www.acefitness.org/resources/pros/expert-articles/5599/good-mornings-are-a-good-way-to-activate-the-posterior-chain/"
+        }
+      ]
+    },
+    {
+      title: "Day 3 – Legs & Balance",
+      exercises: [
+        {
+          name: "Bodyweight Squat",
+          type: "Quads, glutes",
+          seconds: 45,
+          link: "https://www.acefitness.org/resources/everyone/exercise-library/135/bodyweight-squat/"
+        },
+        {
+          name: "Reverse Lunge",
+          type: "Glutes, hamstrings, balance",
+          seconds: 45,
+          link: "https://www.acefitness.org/resources/everyone/exercise-library/94/reverse-lunge-with-knee-lift/"
+        },
+        {
+          name: "Step-Ups",
+          type: "Legs & glutes",
+          seconds: 45,
+          link: "https://www.mayoclinic.org/healthy-lifestyle/fitness/multimedia/step-up/vid-20084661"
+        },
+        {
+          name: "Standing Calf Raises",
+          type: "Calves",
+          seconds: 40,
+          link: "https://www.acefitness.org/resources/everyone/exercise-library/50/standing-calf-raises/"
+        }
+      ]
+    },
+    {
+      title: "Day 4 – Cardio & Core",
+      exercises: [
+        {
+          name: "Step-Ups (Fast but controlled)",
+          type: "Low-impact cardio",
+          seconds: 45,
+          link: "https://www.mayoclinic.org/healthy-lifestyle/fitness/multimedia/step-up/vid-20084661"
+        },
+        {
+          name: "Incline Mountain Climbers",
+          type: "Cardio & core",
+          seconds: 40,
+          link: "https://www.acefitness.org/resources/everyone/exercise-library/258/mountain-climbers/"
+        },
+        {
+          name: "Dead Bug",
+          type: "Core stability",
+          seconds: 40,
+          link: "https://www.acefitness.org/resources/everyone/exercise-library/232/dead-bug/"
+        },
+        {
+          name: "Side Plank (each side)",
+          type: "Obliques & hip stability",
+          seconds: 30,
+          link: "https://www.acefitness.org/resources/everyone/exercise-library/92/side-plank/"
+        }
+      ]
+    },
+    {
+      title: "Day 5 – Mixed Strength",
+      exercises: [
+        {
+          name: "Bodyweight Squat",
+          type: "Quads, glutes",
+          seconds: 45,
+          link: "https://www.acefitness.org/resources/everyone/exercise-library/135/bodyweight-squat/"
+        },
+        {
+          name: "Glute Bridge",
+          type: "Glutes & hamstrings",
+          seconds: 40,
+          link: "https://www.acefitness.org/resources/everyone/exercise-library/49/glute-bridge/"
+        },
+        {
+          name: "Bodyweight Good Morning",
+          type: "Posterior chain",
+          seconds: 40,
+          link: "https://www.acefitness.org/resources/pros/expert-articles/5599/good-mornings-are-a-good-way-to-activate-the-posterior-chain/"
+        },
+        {
+          name: "Plank",
+          type: "Core",
+          seconds: 30,
+          link: "https://www.nhs.uk/live-well/exercise/strength-and-flexibility-exercises/plank-exercise/"
+        },
+        {
+          name: "Side Plank (each side)",
+          type: "Obliques",
+          seconds: 30,
+          link: "https://www.acefitness.org/resources/everyone/exercise-library/92/side-plank/"
+        }
+      ]
+    }
+  ];
+
+  // =============================================================================
+  // STATE MANAGEMENT
+  // =============================================================================
+  const STORAGE_KEY = 'officeWorkoutLinearState';
+  let appState = {
+    selectedDay: 0,
+    completedSteps: {}, // Format: { "day0-step0": true }
+    autoAdvance: true,
+    currentStep: 0
+  };
+
+  function loadState() {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        appState = { ...appState, ...parsed };
+      }
+    } catch (e) {
+      console.error('Failed to load saved state:', e);
+    }
+  }
+
+  function saveState() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+    } catch (e) {
+      console.error('Failed to save state:', e);
+    }
+  }
+
+  // =============================================================================
+  // TIMER ENGINE
+  // =============================================================================
+  let currentTimer = { remaining: 0, running: false, intervalId: null };
+  
+  // Simple audio beep
+  function playBeep() {
+    try {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return;
+      const ctx = new AudioCtx();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = "sine";
+      osc.frequency.value = 880;
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      const now = ctx.currentTime;
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.exponentialRampToValueAtTime(0.2, now + 0.01);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.4);
+
+      osc.start(now);
+      osc.stop(now + 0.45);
+
+      setTimeout(() => ctx.close(), 600);
+    } catch (e) {
+      // Fail silently
+    }
+  }
+
+  function formatTime(sec) {
+    const s = Math.max(0, Math.round(sec));
+    const m = Math.floor(s / 60);
+    const r = s % 60;
+    return `${m}:${r.toString().padStart(2, "0")}`;
+  }
+
+  // =============================================================================
+  // WORKOUT SEQUENCING
+  // =============================================================================
+
+  /**
+   * Builds a complete workout sequence for a given day, including:
+   * - Warmup (2 min)
+   * - Exercise → Rest → Exercise → Rest → ... pattern
+   * - Cooldown (2 min)
+   */
+  function buildWorkoutSequence(dayIndex) {
+    const day = PLAN[dayIndex];
+    const sequence = [];
+    let stepIndex = 0;
+    
+    // Add warmup
+    sequence.push({
+      id: `day${dayIndex}-step${stepIndex++}`,
+      type: 'warmup',
+      data: WARMUP
+    });
+    
+    // Add exercises with rest periods
+    day.exercises.forEach((exercise, idx) => {
+      sequence.push({
+        id: `day${dayIndex}-step${stepIndex++}`,
+        type: 'exercise',
+        data: exercise
+      });
+      
+      // Add rest after each exercise except the last
+      if (idx < day.exercises.length - 1) {
+        sequence.push({
+          id: `day${dayIndex}-step${stepIndex++}`,
+          type: 'rest',
+          data: {
+            name: "Rest",
+            type: "Catch your breath",
+            seconds: 30
+          }
+        });
+      }
+    });
+    
+    // Add cooldown
+    sequence.push({
+      id: `day${dayIndex}-step${stepIndex++}`,
+      type: 'cooldown',
+      data: COOLDOWN
+    });
+    
+    return sequence;
+  }
+
+  // =============================================================================
+  // PROGRESS TRACKING
+  // =============================================================================
+  function updateProgress() {
+    const sequence = buildWorkoutSequence(appState.selectedDay);
+    const completed = sequence.filter(step => appState.completedSteps[step.id]).length;
+    
+    const progressText = document.getElementById('progressText');
+    const progressFill = document.getElementById('progressFill');
+    
+    progressText.textContent = `Progress: ${completed}/${sequence.length} steps completed`;
+    progressFill.style.width = `${(completed / sequence.length) * 100}%`;
+  }
+
+  // =============================================================================
+  // STEP TIMER CONTROLS
+  // =============================================================================
+
+  /**
+   * Start a timer for the current step
+   * - Displays countdown in real-time
+   * - Plays beep when complete
+   * - Auto-advances if enabled
+   */
+  function startStepTimer(seconds, stepId) {
+    if (currentTimer.intervalId) {
+      clearInterval(currentTimer.intervalId);
+    }
+    
+    const display = document.querySelector(`.timer-display[data-step="${stepId}"]`);
+    if (!display) return;
+    
+    currentTimer.remaining = seconds;
+    currentTimer.running = true;
+    display.classList.add('running');
+    display.textContent = formatTime(seconds);
+    
+    currentTimer.intervalId = setInterval(() => {
+      currentTimer.remaining -= 1;
+      if (currentTimer.remaining <= 0) {
+        currentTimer.remaining = 0;
+        clearInterval(currentTimer.intervalId);
+        currentTimer.intervalId = null;
+        currentTimer.running = false;
+        display.classList.remove('running');
+        display.classList.add('finished');
+        playBeep();
+        
+        // Mark step as completed
+        markStepCompleted(stepId);
+        
+        // Auto-advance if enabled
+        if (appState.autoAdvance) {
+          setTimeout(() => advanceToNextStep(), 1000);
+        }
+      }
+      display.textContent = formatTime(currentTimer.remaining);
+    }, 1000);
+  }
+
+  function pauseStepTimer() {
+    if (currentTimer.intervalId) {
+      clearInterval(currentTimer.intervalId);
+      currentTimer.intervalId = null;
+    }
+    currentTimer.running = false;
+    
+    // Remove running class from any displays
+    document.querySelectorAll('.timer-display.running').forEach(display => {
+      display.classList.remove('running');
+    });
+  }
+
+  function skipCurrentStep() {
+    pauseStepTimer();
+    const sequence = buildWorkoutSequence(appState.selectedDay);
+    if (appState.currentStep < sequence.length) {
+      markStepCompleted(sequence[appState.currentStep].id);
+      advanceToNextStep();
+    }
+  }
+
+  function markStepCompleted(stepId) {
+    appState.completedSteps[stepId] = true;
+    const card = document.querySelector(`.step-card[data-step="${stepId}"]`);
+    if (card) {
+      card.classList.add('completed');
+    }
+    updateProgress();
+    saveState();
+  }
+
+  function setCurrentStep(stepIndex) {
+    pauseStepTimer();
+    appState.currentStep = stepIndex;
+    
+    // Update UI to show current step
+    document.querySelectorAll('.step-card').forEach(card => {
+      card.classList.remove('current');
+    });
+    
+    const sequence = buildWorkoutSequence(appState.selectedDay);
+    if (stepIndex < sequence.length) {
+      const currentStepId = sequence[stepIndex].id;
+      const currentCard = document.querySelector(`.step-card[data-step="${currentStepId}"]`);
+      if (currentCard) {
+        currentCard.classList.add('current');
+        currentCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+    
+    saveState();
+  }
+
+  function advanceToNextStep() {
+    const sequence = buildWorkoutSequence(appState.selectedDay);
+    if (appState.currentStep < sequence.length - 1) {
+      setCurrentStep(appState.currentStep + 1);
+    }
+  }
+
+  function goToPreviousStep() {
+    if (appState.currentStep > 0) {
+      setCurrentStep(appState.currentStep - 1);
+    }
+  }
+
+  // =============================================================================
+  // UI RENDERING
+  // =============================================================================
+
+  /**
+   * Renders the workout sequence for a given day
+   * - Creates step cards with timers
+   * - Highlights current step
+   * - Shows completed steps with checkmark
+   */
+  function renderWorkout(dayIndex) {
+    pauseStepTimer();
+    
+    const day = PLAN[dayIndex];
+    const sequence = buildWorkoutSequence(dayIndex);
+    
+    document.getElementById('dayTitle').textContent = day.title;
+    const workoutList = document.getElementById('workoutList');
+    workoutList.innerHTML = '';
+    
+    sequence.forEach((step, index) => {
+      const card = document.createElement('div');
+      card.className = `step-card ${step.type}`;
+      card.dataset.step = step.id;
+      
+      if (appState.completedSteps[step.id]) {
+        card.classList.add('completed');
+      }
+      
+      if (index === appState.currentStep) {
+        card.classList.add('current');
+      }
+      
+      const stepNumber = document.createElement('div');
+      stepNumber.className = 'step-number';
+      stepNumber.textContent = `Step ${index + 1} of ${sequence.length}`;
+      card.appendChild(stepNumber);
+      
+      const header = document.createElement('div');
+      header.className = 'step-header';
+      header.textContent = step.data.name;
+      card.appendChild(header);
+      
+      const type = document.createElement('div');
+      type.className = 'step-type';
+      type.textContent = step.data.type;
+      card.appendChild(type);
+      
+      const content = document.createElement('div');
+      content.className = 'step-content';
+      
+      // Left side content
+      const leftSide = document.createElement('div');
+      
+      if (step.type === 'exercise' && step.data.link) {
+        const links = document.createElement('div');
+        links.className = 'links';
+        const a = document.createElement('a');
+        a.href = step.data.link;
+        a.target = '_blank';
+        a.rel = 'noopener';
+        a.textContent = 'How to do it (opens in new tab)';
+        links.appendChild(a);
+        leftSide.appendChild(links);
+      }
+      
+      if ((step.type === 'warmup' || step.type === 'cooldown') && step.data.instructions) {
+        const instructions = document.createElement('div');
+        instructions.className = 'instructions-text';
+        instructions.innerHTML = step.data.instructions.join('<br>');
+        leftSide.appendChild(instructions);
+      }
+      
+      // Right side timer
+      const timerSection = document.createElement('div');
+      timerSection.className = 'timer-section';
+      
+      const display = document.createElement('span');
+      display.className = 'timer-display';
+      display.dataset.step = step.id;
+      display.textContent = formatTime(step.data.seconds);
+      
+      const startBtn = document.createElement('button');
+      startBtn.className = 'primary';
+      startBtn.textContent = 'Start';
+      startBtn.onclick = () => {
+        setCurrentStep(index);
+        if (currentTimer.running) {
+          pauseStepTimer();
+          startBtn.textContent = 'Start';
+        } else {
+          startStepTimer(currentTimer.remaining || step.data.seconds, step.id);
+          startBtn.textContent = 'Pause';
+        }
+      };
+      
+      const skipBtn = document.createElement('button');
+      skipBtn.className = 'skip';
+      skipBtn.textContent = 'Skip';
+      skipBtn.onclick = () => {
+        setCurrentStep(index);
+        skipCurrentStep();
+      };
+      
+      timerSection.appendChild(display);
+      timerSection.appendChild(startBtn);
+      timerSection.appendChild(skipBtn);
+      
+      content.appendChild(leftSide);
+      content.appendChild(timerSection);
+      card.appendChild(content);
+      
+      workoutList.appendChild(card);
+    });
+    
+    updateProgress();
+  }
+
+  // =============================================================================
+  // INITIALIZATION & EVENT LISTENERS
+  // =============================================================================
+  loadState();
+  
+  const daySelect = document.getElementById('daySelect');
+  const autoAdvanceToggle = document.getElementById('autoAdvanceToggle');
+  
+  daySelect.value = appState.selectedDay.toString();
+  autoAdvanceToggle.checked = appState.autoAdvance;
+  
+  renderWorkout(appState.selectedDay);
+
+  // Event listeners
+  daySelect.addEventListener('change', () => {
+    const idx = parseInt(daySelect.value, 10) || 0;
+    appState.selectedDay = idx;
+    appState.currentStep = 0;
+    saveState();
+    renderWorkout(idx);
+  });
+  
+  autoAdvanceToggle.addEventListener('change', () => {
+    appState.autoAdvance = autoAdvanceToggle.checked;
+    saveState();
+  });
+
+  document.getElementById('resetProgressBtn').addEventListener('click', () => {
+    if (confirm('Reset all progress for this day?')) {
+      const sequence = buildWorkoutSequence(appState.selectedDay);
+      sequence.forEach(step => {
+        delete appState.completedSteps[step.id];
+      });
+      appState.currentStep = 0;
+      saveState();
+      renderWorkout(appState.selectedDay);
+    }
+  });
+
+  // Keyboard shortcuts
+  document.addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'INPUT') return;
+    
+    switch(e.key) {
+      case ' ':
+        e.preventDefault();
+        const sequence = buildWorkoutSequence(appState.selectedDay);
+        if (appState.currentStep < sequence.length) {
+          const currentStepId = sequence[appState.currentStep].id;
+          const startBtn = document.querySelector(`.step-card[data-step="${currentStepId}"] button.primary`);
+          if (startBtn) startBtn.click();
+        }
+        break;
+        
+      case 'n':
+      case 'N':
+        advanceToNextStep();
+        break;
+        
+      case 'p':
+      case 'P':
+        goToPreviousStep();
+        break;
+        
+      case '1':
+      case '2':
+      case '3':
+      case '4':
+      case '5':
+        const day = parseInt(e.key) - 1;
+        daySelect.value = day.toString();
+        appState.selectedDay = day;
+        appState.currentStep = 0;
+        saveState();
+        renderWorkout(day);
+        break;
+    }
+  });
+</script>
+</body>
+</html>
