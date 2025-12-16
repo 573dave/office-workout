@@ -25,7 +25,7 @@ A free, ad-free, single-file web application for guided office workouts. Perfect
 Visit **[https://573dave.github.io/office-workout/](https://573dave.github.io/office-workout/)** in your browser.
 
 ### Option 2: Download and Use Locally
-1. Download `office-workout.html` from this repository
+1. Download `index.html` from this repository
 2. Open the file in any modern web browser
 3. Bookmark it for easy access
 
@@ -37,7 +37,7 @@ git clone https://github.com/573dave/office-workout.git
 # Serve with any static file server
 cd office-workout
 python -m http.server 8000
-# Open http://localhost:8000/office-workout.html
+# Open http://localhost:8000
 ```
 
 ## How to Use
@@ -108,7 +108,7 @@ Each workout includes:
 
 This is a single-file application, so development is straightforward:
 
-1. Edit `office-workout.html` in your favorite text editor
+1. Edit `index.html` in your favorite text editor
 2. Open it in a browser to test
 3. No build process or dependencies required
 
