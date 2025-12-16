@@ -2,8 +2,6 @@
 
 A free, ad-free, single-file web application for guided office workouts. Perfect for desk workers who want to stay active during work hours without leaving the office.
 
-**[Try it now!](https://573dave.github.io/office-workout/)** *(No installation required)*
-
 ![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
 
 ## Features
@@ -21,15 +19,12 @@ A free, ad-free, single-file web application for guided office workouts. Perfect
 
 ## Quick Start
 
-### Option 1: Use Online (Recommended)
-Visit **[https://573dave.github.io/office-workout/](https://573dave.github.io/office-workout/)** in your browser.
-
-### Option 2: Download and Use Locally
+### Option 1: Download and Use Locally
 1. Download `index.html` from this repository
 2. Open the file in any modern web browser
 3. Bookmark it for easy access
 
-### Option 3: Self-Host
+### Option 2: Self-Host
 ```bash
 # Clone the repository
 git clone https://github.com/573dave/office-workout.git
@@ -112,8 +107,6 @@ This is a single-file application, so development is straightforward:
 2. Open it in a browser to test
 3. No build process or dependencies required
 
-For more details about the code architecture, see [CLAUDE.md](CLAUDE.md).
-
 ## Deployment on GitHub Pages
 
 To deploy your own version:
@@ -123,7 +116,6 @@ To deploy your own version:
 3. Select source: "Deploy from a branch"
 4. Select branch: `main` (or `master`) and folder: `/ (root)`
 5. Click Save
-6. Your site will be available at `https://yourusername.github.io/office-workout/`
 
 ## Contributing
 
